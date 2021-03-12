@@ -1,3 +1,4 @@
+// https://github.com/Percegaroli/sistemaDeEquacoes
 type Fileira = Array<number>;
 export type Matriz = Array<Fileira>;
 
@@ -21,16 +22,21 @@ const reduzirMatriz = (matriz: Matriz, j: number) => {
 
 const calcularDeterminante = (matriz: Matriz) => {
   let determinante = 0;
-  for (let j = 0; j < matriz.length; j += 1) {
-    const sinal = Math.pow(-1, 1 + (j + 1));
-    const valorRemovido = matriz[0][j];
-    const matrizReduzida = reduzirMatriz(matriz, j);
-    const determinanteMatrizReduzida = verificarSeMatriz2x2(matrizReduzida)
-      ? calcularDeterminante2x2(matrizReduzida)
-      : calcularDeterminante(matrizReduzida);
-    const valorASomar = sinal * valorRemovido * determinanteMatrizReduzida;
-    determinante += valorASomar;
+  if (matriz.length === 2) {
+    determinante = (matriz[0][0] * matriz[1][1]) - (matriz[1][0] * matriz[0][1]);
+  } else {
+    for (let j = 0; j < matriz.length; j += 1) {
+      const sinal = Math.pow(-1, 1 + (j + 1));
+      const valorRemovido = matriz[0][j];
+      const matrizReduzida = reduzirMatriz(matriz, j);
+      const determinanteMatrizReduzida = verificarSeMatriz2x2(matrizReduzida)
+        ? calcularDeterminante2x2(matrizReduzida)
+        : calcularDeterminante(matrizReduzida);
+      const valorASomar = sinal * valorRemovido * determinanteMatrizReduzida;
+      determinante += valorASomar;
+    }
   }
+
   return determinante;
 };
 

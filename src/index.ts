@@ -41,13 +41,38 @@ const criarSistemaNorma = (
   return matrizFinal;
 };
 
+const printarSomatoria = (index: number) => {
+  let somatoria = '';
+  if (index === 0) {
+    somatoria = 'Calculando somatoria de g0|g0 = (a * e^(xi²))², 0 <= i <= 2';
+  }
+  if (index === 1) {
+    somatoria = 'Calulando somatoria de g0|g1 = (a * e^(xi²) * (x³), 0 <= i <= 2';
+  }
+  if (index === 2) {
+    somatoria = 'Calculando somatoria de f(x)|g0 = f(x) * (a * e^(xi²)), 0 <= i <= 2';
+  }
+  if (index === 3) {
+    somatoria = 'Calculando somatoria de g1|g1 = (x³)², 0 <= i <= 2';
+  }
+  if (index === 4) {
+    somatoria = 'Calculando somatoria de g1|g0 = (a * e^(xi²) * (x³), 0 <= i <= 2';
+  }
+  if (index === 5) {
+    somatoria = 'Calculando somatoria de f(x)|g1 = f(x) * (x³), 0 <= i <= 2';
+  }
+  console.log(somatoria);
+};
+
 const calcularSistemaEquacoes = (
   sistemaNorma: MatrizFuncoes, valoresConhecidos: Array<Valor>,
-) => sistemaNorma.map((fileira) => fileira.map((equacao) => {
+) => sistemaNorma.map((fileira) => fileira.map((equacao, index) => {
   let resultado = 0;
+  printarSomatoria(index);
   valoresConhecidos.forEach((valor) => {
     resultado += equacao(valor.x);
   });
+  console.log(`somatoria = ${resultado} \n`);
   return resultado;
 }));
 
@@ -70,9 +95,27 @@ const resolverSistemaEquacoes = (sistemaEquacoes: Array<Array<number>>) => {
   return resolverSistemaLinear(matrizCoeficientes, matrizResultados);
 };
 
+const printarSistemaEquacoes = (sistemaEquacoes : Array<Array<number>>) => {
+  console.log('O sistema de equações ficou:');
+  sistemaEquacoes.forEach((fileira) => {
+    let texto = '';
+    fileira.forEach((resultado, index) => {
+      if (index === 0) {
+        texto = `a0 * ${resultado}`;
+      } else if (index === fileira.length - 1) {
+        texto = `${texto} = ${resultado}`;
+      } else {
+        texto = `${texto} + a${index} * ${resultado}`;
+      }
+    });
+    console.log(texto);
+  });
+};
+
 export const calcularMinimoQuadrado = (funcoes: Array<Funcao>, valoresConhecidos: Array<Valor>) => {
   const sistemaNorma = criarSistemaNorma(funcoes, valoresConhecidos);
   const sistemaEquacoes = calcularSistemaEquacoes(sistemaNorma, valoresConhecidos);
+  printarSistemaEquacoes(sistemaEquacoes);
   const resolucaoSistema = resolverSistemaEquacoes(sistemaEquacoes);
   return resolucaoSistema;
 };
