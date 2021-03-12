@@ -1,6 +1,8 @@
 import {
   Funcao, MatrizFuncoes, Valor,
 } from './interface';
+import { Matriz } from './sistemaEquacoes/determinante';
+import { resolverSistemaLinear } from './sistemaEquacoes';
 
 const calcularProdutoEscalarFuncoes = (
   funcao1: Funcao, funcao2: Funcao, x: number,
@@ -49,10 +51,30 @@ const calcularSistemaEquacoes = (
   return resultado;
 }));
 
+const criarMatrizResultados = (sistemaEquacoes: Array<Array<number>>): Array<number> => {
+  const matrizResultados: Array<number> = [];
+  sistemaEquacoes.forEach((fileira) => matrizResultados.push(fileira[fileira.length - 1]));
+  return matrizResultados;
+};
+
+const criarMatrizCoeficientes = (sistemaEquacoes: Matriz): Matriz => {
+  const indexResultado = sistemaEquacoes[0].length - 1;
+  return sistemaEquacoes.map(
+    (fileira) => fileira.filter((_, index) => index !== indexResultado),
+  );
+};
+
+const resolverSistemaEquacoes = (sistemaEquacoes: Array<Array<number>>) => {
+  const matrizResultados = criarMatrizResultados(sistemaEquacoes);
+  const matrizCoeficientes = criarMatrizCoeficientes(sistemaEquacoes);
+  return resolverSistemaLinear(matrizCoeficientes, matrizResultados);
+};
+
 export const calcularMinimoQuadrado = (funcoes: Array<Funcao>, valoresConhecidos: Array<Valor>) => {
   const sistemaNorma = criarSistemaNorma(funcoes, valoresConhecidos);
   const sistemaEquacoes = calcularSistemaEquacoes(sistemaNorma, valoresConhecidos);
-  return sistemaEquacoes;
+  const resolucaoSistema = resolverSistemaEquacoes(sistemaEquacoes);
+  return resolucaoSistema;
 };
 
 export default {};
